@@ -3,7 +3,7 @@ fetch('https://api.thousandeyes.com/v6/alerts.json', {
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${api_token}`
+    'Authorization': `Bearer ${47ee7d76-4783-40f6-b574-0b2c80e68ea4}`
   }
 })
 .then(response => response.json())
