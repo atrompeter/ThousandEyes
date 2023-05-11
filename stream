@@ -1,0 +1,26 @@
+import requests
+
+url = "https://api.thousandeyes.com/v7/stream"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer $BEARER_TOKEN"
+}
+data = {
+    "type": "opentelemetry",
+    "tagMatch": [
+        {
+            "key": "TestKey",
+            "value": "TestValue",
+            "objectType": "test"
+        }
+    ],
+    "streamEndpointUrl": "https://example.org",
+    "customHeaders": {
+        "test": "value"
+    }
+}
+
+response = requests.post(url, headers=headers, json=data)
+
+print(response.status_code)
+print(response.text)
