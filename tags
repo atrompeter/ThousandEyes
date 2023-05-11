@@ -1,0 +1,18 @@
+import requests
+
+url = "https://api.thousandeyes.com/v7/tags"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer $BEARER_TOKEN"
+}
+data = {
+    "key": "TestKey",
+    "value": "TestValue",
+    "objectType": "test",
+    "accessType": "all"
+}
+
+response = requests.post(url, headers=headers, json=data)
+
+print(response.status_code)
+print(response.text)
