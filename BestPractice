@@ -1,0 +1,91 @@
+import requests
+
+def fetch_thousandeyes_tests(api_token):
+    url = 'https://api.thousandeyes.com/tests.json'
+    headers = {'Authorization': f'Bearer {api_token}'}
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        tests_data = response.json()
+        return tests_data.get('test')
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while fetching tests: {e}")
+        return None
+
+def fetch_test_alerts(api_token, test_id):
+    url = f'https://api.thousandeyes.com/tests/{test_id}/alerts.json'
+    headers = {'Authorization': f'Bearer {api_token}'}
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        alerts_data = response.json()
+        return alerts_data.get('alerts')
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while fetching alerts for test {test_id}: {e}")
+        return None
+
+def fetch_test_dashboard(api_token, test_id):
+    url = f'https://api.thousandeyes.com/tests/{test_id}/dashboards.json'
+    headers = {'Authorization': f'Bearer {api_token}'}
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        dashboards_data = response.json()
+        return dashboards_data.get('dashboards')
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while fetching dashboards for test {test_id}: {e}")
+        return None
+
+def fetch_dashboard_metrics(api_token, dashboard_id):
+    url = f'https://api.thousandeyes.com/dashboards/{dashboard_id}.json'
+    headers = {'Authorization': f'Bearer {api_token}'}
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        dashboard_data = response.json()
+        return dashboard_data.get('elements')
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while fetching metrics for dashboard {dashboard_id}: {e}")
+        return None
+
+def analyze_test(test, api_token):
+    test_id = test.get('testId')
+    test_name = test.get('testName')
+
+    print(f"\nAnalyzing Test: {test_name} (ID: {test_id})")
+
+    # Step 1: Fetch alerts for the test
+    alerts = fetch_test_alerts(api_token, test_id)
+    if alerts:
+        print(f"Alerts for Test {test_name}:")
+        for alert in alerts:
+            print(f"  Alert ID: {alert.get('alertId')}, Type: {alert.get('type')}")
+
+    # Step 2: Check if the test is associated with a dashboard
+    dashboards = fetch_test_dashboard(api_token, test_id)
+    if dashboards:
+        print(f"\nTest {test_name} is associated with the following dashboards:")
+        for dashboard in dashboards:
+            dashboard_id = dashboard.get('dashboardId')
+            print(f"  Dashboard ID: {dashboard_id}")
+
+            # Step 3: Fetch metrics for the dashboard
+            metrics = fetch_dashboard_metrics(api_token, dashboard_id)
+            if metrics:
+                print(f"  Metrics for Dashboard {dashboard_id}:")
+                for metric in metrics:
+                    print(f"    Metric ID: {metric.get('id')}, Name: {metric.get('name')}")
+            else:
+                print(f"  No metrics found for Dashboard {dashboard_id}")
+
+if __name__ == '__main__':
+    api_token = 'e53d26bf-0c32-42f5-a995-a6e3088c2f9c'
+
+    tests = fetch_thousandeyes_tests(api_token)
+    if tests:
+        for test in tests:
+            analyze_test(test, api_token)
