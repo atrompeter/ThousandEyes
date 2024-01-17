@@ -66,7 +66,7 @@ def analyze_enabled_tests(enabled_tests, api_token):
             print(f"Failed to fetch details for test {test_id}")
 
 if __name__ == '__main__':
-    api_token = 'be3c0eca-369a-4b85-9396-8300372f9038:'
+    api_token = ':'
 
     tests = fetch_thousandeyes_tests(api_token)
     if tests:
