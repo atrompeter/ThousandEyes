@@ -83,7 +83,7 @@ def analyze_test(test, api_token):
                 print(f"  No metrics found for Dashboard {dashboard_id}")
 
 if __name__ == '__main__':
-    api_token = 'be3c0eca-369a-4b85-9396-8300372f9038'
+    api_token = 'TOKEN'
 
     tests = fetch_thousandeyes_tests(api_token)
     if tests:
