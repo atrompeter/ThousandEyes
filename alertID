@@ -27,7 +27,7 @@ def fetch_alert_rule_detail(api_token, rule_id):
         return None
 
 if __name__ == '__main__':
-    api_token = 'YOUR_API_TOKEN'
+    api_token = 'cf149c74-55aa-4a6b-9fbf-ac39696752b8'
 
     # Step 1: Fetch all alert rules
     alert_rules = fetch_alert_rules(api_token)
