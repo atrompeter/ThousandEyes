@@ -1,0 +1,47 @@
+import requests
+
+# Your ThousandEyes API token
+API_TOKEN = "46dcee70-a13c-437f-af09-3c16d06c106f"
+
+# URL for ThousandEyes API endpoint to retrieve agents
+AGENTS_API_URL = "https://api.thousandeyes.com/v6/agents.json"
+
+# URL for ThousandEyes API endpoint to retrieve tests associated with an agent
+AGENT_TESTS_API_URL = "https://api.thousandeyes.com/v6/agents/{}/tests.json"
+
+def get_agents(api_token):
+    headers = {
+        "Authorization": "Bearer " + api_token
+    }
+    response = requests.get(AGENTS_API_URL, headers=headers)
+    return response.json()["agents"]
+
+def get_agent_tests(api_token, agent_id):
+    url = AGENT_TESTS_API_URL.format(agent_id)
+    headers = {
+        "Authorization": "Bearer " + api_token
+    }
+    response = requests.get(url, headers=headers)
+    return response.json()["tests"]
+
+def main():
+    agents = get_agents(API_TOKEN)
+    for agent in agents:
+        agent_id = agent["agentId"]
+        agent_name = agent["agentName"]
+        print(f"Agent: {agent_name} (ID: {agent_id})")
+        
+        tests = get_agent_tests(API_TOKEN, agent_id)
+        if tests:
+            print("Tests running on this agent:")
+            for test in tests:
+                test_name = test["testName"]
+                test_type = test["testType"]
+                test_interval = test["interval"]
+                print(f"- Test: {test_name}, Type: {test_type}, Interval: {test_interval} seconds")
+        else:
+            print("No tests running on this agent")
+        print("\n")
+
+if __name__ == "__main__":
+    main()
